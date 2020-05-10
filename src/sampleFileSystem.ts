@@ -32,22 +32,23 @@ export class SampleFileSystemProvider implements FileSystemProvider {
   }
 
   private _getFile(uri: Uri): SampleFile {
-    console.log(uri.path);
-    const [root, ...pathComponents] = uri.path.split('/');
+    let path = uri.path;
+    if (path.charAt(path.length - 1) === '/')
+    {
+      path = path.substr(0, path.length - 1);
+    }
+    const [root, ...pathComponents] = path.split('/');
     let file:SampleFile = this._directory;
     pathComponents.forEach((component) => {
-      if (component !== '')
-      {
-        if (typeof file === 'string') {
-          throw FileSystemError.FileNotADirectory; 
-        }
-        if (!file.hasOwnProperty(component))
-        {
-          throw FileSystemError.FileNotFound; 
-        }
-        file = file[component];
+      if (typeof file === 'string') {
+        throw FileSystemError.FileNotADirectory; 
       }
-    })
+      if (!file.hasOwnProperty(component))
+      {
+        throw FileSystemError.FileNotFound; 
+      }
+      file = file[component];
+    });
     return file;
   }
 
