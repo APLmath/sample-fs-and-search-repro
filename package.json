@@ -2,6 +2,7 @@
 	"name": "sample-fs-and-search-repro",
 	"displayName": "Sample FS and Search Repro",
 	"description": "Sample extension to reproduce the search bug with a custom SearchTextProvider",
+	"publisher": "APLmath",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.45.0"
@@ -10,8 +11,7 @@
 		"Other"
 	],
 	"activationEvents": [
-    "onFileSystem:samplefs",
-		"onCommand:sample-fs-and-search-repro.helloWorld"
+    "onFileSystem:samplefs"
 	],
 	"main": "./out/extension.js",
 	"enableProposedApi": true,

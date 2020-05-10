@@ -10,7 +10,8 @@
 			"readme.md": "Hello!",
 			"src": {
 				"hello.py": "print 'Hello world'",
-				"hello.js": "Console.log('Hello world');"
+				"hello.js": "Console.log('Hello world');",
+				"hello.c": "printf(\"Hello world\");"
 			}
 		}
 	}

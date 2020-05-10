@@ -10,6 +10,16 @@ import {
   FileSystemProvider,
   FileType,
   Uri,
+  TextSearchQuery,
+  TextSearchOptions,
+  Progress,
+  TextSearchResult,
+  CancellationToken,
+  ProviderResult,
+  TextSearchComplete,
+  TextSearchProvider,
+  Range,
+  workspace,
 } from 'vscode';
 import { TextEncoder } from 'util';
 
@@ -21,14 +31,30 @@ export interface SampleDirectory {
 }
 type SampleFile = SampleDirectory | string;
 
-export class SampleFileSystemProvider implements FileSystemProvider {
+export class SuperSimpleStringSystemProvider implements FileSystemProvider, TextSearchProvider {
+
+  private _fileUris: Uri[] = [];
+
+  constructor(private _disk: SampleDirectory) {
+    function helper(file: SampleFile, uriStr: string, fileUris: Uri[]) {
+      if (typeof file === 'string') {
+        fileUris.push(Uri.parse(uriStr));
+      } else {
+        Object.keys(file).forEach((filename) => {
+          helper(file[filename], uriStr + '/' + filename, fileUris);
+        });
+      }
+    }
+    helper(this._disk, 'samplefs://', this._fileUris);
+  }
+
+  /**
+   * FileSystemProvider implementation
+   */
 
   private _onDidChangeFile = new EventEmitter<FileChangeEvent[]>();
   get onDidChangeFile(): Event<FileChangeEvent[]> {
     return this._onDidChangeFile.event;
-  }
-
-  constructor(private _directory: SampleDirectory) {
   }
 
   private _getFile(uri: Uri): SampleFile {
@@ -38,7 +64,7 @@ export class SampleFileSystemProvider implements FileSystemProvider {
       path = path.substr(0, path.length - 1);
     }
     const [root, ...pathComponents] = path.split('/');
-    let file:SampleFile = this._directory;
+    let file:SampleFile = this._disk;
     pathComponents.forEach((component) => {
       if (typeof file === 'string') {
         throw FileSystemError.FileNotADirectory; 
@@ -117,6 +143,47 @@ export class SampleFileSystemProvider implements FileSystemProvider {
 
   copy?(source: Uri, destination: Uri, options: { overwrite: boolean; }): void | Thenable<void> {
     throw FileSystemError.NoPermissions;
+  }
+
+  /**
+   * TextSearchProvider implementation
+   */
+
+  async provideTextSearchResults(query: TextSearchQuery, options: TextSearchOptions, progress: Progress<TextSearchResult>, token: CancellationToken): Promise<TextSearchComplete> {
+    let keywords = query.pattern.split(/\s+/);
+    let regexes = keywords.map((keyword) => RegExp('\\b' + keyword + '\\b', 'g'));
+    let promises = this._fileUris.map(async (uri) => {
+      let textDoc = await workspace.openTextDocument(uri);
+      let content = textDoc.getText();
+      console.log(uri);
+      regexes.forEach((regex) => {
+        console.log(regex.source);
+        let match:RegExpExecArray | null = null;
+        while((match = regex.exec(content)) != null) {
+          console.log(match);
+          console.log(match.index);
+          console.log(match[0].length);
+          let start = textDoc.positionAt(match.index);
+          let end = textDoc.positionAt(match.index + match[0].length);
+          let range = new Range(start, end);
+          console.log(textDoc.getText(range));
+          let line = textDoc.lineAt(start.line);
+          let pmatch = new Range(0, start.character, 0, end.character);
+          progress.report({
+            uri: uri,
+            ranges: range,
+            preview: {
+              text: line.text,
+              matches: pmatch
+            }
+          });
+        }
+      });
+    });
+    await Promise.all(promises);
+    return {
+      limitHit: false
+    };
   }
 }
 
