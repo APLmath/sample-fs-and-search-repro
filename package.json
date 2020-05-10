@@ -15,12 +15,13 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"commands": [
-			{
-				"command": "sample-fs-and-search-repro.helloWorld",
-				"title": "Hello World"
+		"properties": {
+			"samplefs": {
+				"type": "object",
+				"description": "Enumeration of the files in the sample filesystem",
+				"scope": "window"
 			}
-		]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

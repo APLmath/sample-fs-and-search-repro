@@ -4,5 +4,14 @@
 			"uri": "samplefs:///",
 			"name": "sample"
 		}
-	]
+	],
+	"settings": {
+		"samplefs.disk": {
+			"readme.md": "Hello!",
+			"src": {
+				"hello.py": "print 'Hello world'",
+				"hello.js": "Console.log('Hello world');"
+			}
+		}
+	}
 }

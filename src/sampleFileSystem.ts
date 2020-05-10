@@ -16,7 +16,7 @@ import { TextEncoder } from 'util';
 /**
  * Extremely basic filesystem of text-only files and directories.
  */
-interface SampleDirectory {
+export interface SampleDirectory {
   [filename: string]: SampleFile; 
 }
 type SampleFile = SampleDirectory | string;
@@ -118,4 +118,19 @@ export class SampleFileSystemProvider implements FileSystemProvider {
   copy?(source: Uri, destination: Uri, options: { overwrite: boolean; }): void | Thenable<void> {
     throw FileSystemError.NoPermissions;
   }
+}
+
+export function validateFile(maybeFile: any):boolean {
+  if (typeof maybeFile === 'string') {
+    return true;
+  }
+  if (typeof maybeFile === 'object') {
+    return Object.keys(maybeFile).every((filename) => {
+      if (typeof filename !== 'string') {
+        return false;
+      }
+      return validateFile(maybeFile[filename]);
+    });
+  }
+  return false;
 }
