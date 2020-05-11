@@ -10,8 +10,23 @@
 			"readme.md": "Hello!",
 			"src": {
 				"hello.py": "print 'Hello world'",
-				"hello.js": "Console.log('Hello world');",
-				"hello.c": "printf(\"Hello world\");"
+				"hello.js": "console.log('Hello to the world');",
+				"hello.c": "printf(\"Welcome, world.\");"
+			},
+			"hello": {
+				"file1": "I say Hello world!",
+				"file2": "To the world, hello to you!"
+			},
+			"Shakespeare": {
+				"Hamlet": "To be, or not to be: that is the question:\nWhether 'tis nobler in the mind to suffer\nThe slings and arrows of outrageous fortune,\nOr to take arms against a sea of troubles,\nAnd by opposing end them?",
+				"As You Like It": "All the world's a stage,\nAnd all the men and women merely players.\nThey have their exits and their entrances;\nAnd one man in his time plays many parts",
+				"Romeo & Juliet": "O Romeo, Romeo! wherefore art thou Romeo?",
+				"Richard III": "Now is the winter of our discontent\nMade glorious summer by this sun of York;\nAnd all the clouds that lour'd upon our house\nIn the deep bosom of the ocean buried.",
+				"Macbeth": "Is this a dagger which I see before me,\nThe handle toward my hand? Come, let me clutch thee.\nArt thou not, fatal vision, sensible\nTo feeling as to sight? Or art thou but\nA dagger of the mind, a false creation,\nProceeding from the heat-oppressèd brain?\nI see thee yet, in form as palpable\nAs this which now I draw.",
+				"Twelfth Night": "If music be the food of love, play on.\nGive me excess of it that, surfeiting,\nThe appetite may sicken, and so die.",
+				"The Merchant of Venice": "If you prick us, do we not bleed? if you tickle us, do we not laugh? if you poison us, do we not die? and if you wrong us, shall we not revenge?",
+				"A Midsummer Night's Dream": "The course of true love never did run smooth.",
+				"Sonnet 18": "Shall I compare thee to a summer's day?\nThou art more lovely and more temperate."
 			}
 		}
 	}
