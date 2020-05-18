@@ -19,6 +19,8 @@ import {
   TextSearchProvider,
   Range,
   workspace,
+  OutputChannel,
+  window,
 } from 'vscode';
 import { TextEncoder } from 'util';
 
@@ -79,6 +81,7 @@ interface WholeWordSearchIndex {
 export class SuperSimpleStringSystemProvider implements FileSystemProvider, TextSearchProvider {
 
   private _index: WholeWordSearchIndex = {};
+  private _outputChannel: OutputChannel;
 
   constructor(private _disk: SampleDirectory) {
     // Index the disk contents.
@@ -107,6 +110,9 @@ export class SuperSimpleStringSystemProvider implements FileSystemProvider, Text
       }
     }
     helper(this._disk, 'samplefs://', this._index);
+
+    // Set up output channel.
+    this._outputChannel = window.createOutputChannel('SuperSimpleStringSystemProvider');
   }
 
   /**
@@ -211,6 +217,7 @@ export class SuperSimpleStringSystemProvider implements FileSystemProvider, Text
    */
 
   async provideTextSearchResults(query: TextSearchQuery, options: TextSearchOptions, progress: Progress<TextSearchResult>, token: CancellationToken): Promise<TextSearchComplete> {
+    this._outputChannel.appendLine(`Getting results for "${query.pattern}"...`);
     let words = query.pattern.trim().split(/\s+/);
 
     let results: WholeWordSearchMatch = {};
@@ -239,14 +246,16 @@ export class SuperSimpleStringSystemProvider implements FileSystemProvider, Text
       for (const matchRegion of results[uriStr]) {
         let start = textDoc.positionAt(matchRegion.start);
         let end = textDoc.positionAt(matchRegion.end);
-        progress.report({
+        let result = {
           uri: uri,
           ranges: new Range(start, end),
           preview: {
             text: textDoc.lineAt(start.line).text,
             matches: new Range(0, start.character, 0, end.character)
           }
-        });
+        };
+        this._outputChannel.appendLine(JSON.stringify(result, null, 2));
+        progress.report(result);
       }
     });
     await Promise.all(promises);
