@@ -3,6 +3,10 @@
 	"displayName": "Sample FS and Search Repro",
 	"description": "Sample extension to reproduce the search bug with a custom SearchTextProvider",
 	"publisher": "APLmath",
+	"repository": {
+		"type": "github",
+		"url": "https://github.com/APLmath/sample-fs-and-search-repro"
+	},
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.45.0"
