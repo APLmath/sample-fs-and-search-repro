@@ -21,8 +21,10 @@ import {
   workspace,
   OutputChannel,
   window,
+  TextSearchMatch,
 } from 'vscode';
 import { TextEncoder } from 'util';
+import { format } from 'url';
 
 /**
  * Extremely basic filesystem of text-only files and directories.
@@ -254,7 +256,7 @@ export class SuperSimpleStringSystemProvider implements FileSystemProvider, Text
             matches: new Range(0, start.character, 0, end.character)
           }
         };
-        this._outputChannel.appendLine(JSON.stringify(result, null, 2));
+        this._outputChannel.appendLine(this._formatResult(result));
         progress.report(result);
       }
     });
@@ -262,6 +264,11 @@ export class SuperSimpleStringSystemProvider implements FileSystemProvider, Text
     return {
       limitHit: false
     };
+  }
+
+  private _formatResult(result: TextSearchMatch): string {
+    let range = <Range>result.ranges;
+    return `- uri   = ${result.uri.toString()}\n  range = (${range.start.line}, ${range.start.character}) - (${range.end.line}, ${range.end.character})`;
   }
 }
 
