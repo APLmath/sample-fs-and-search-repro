@@ -40,3 +40,5 @@ Here are some sample search queries, and what the results should be. The highlig
 Notice that in the output console, there are supposed to be 5 results, but only 3 are shown in the search results UI:
 
 ![](images/inconsistent-search-results.png)
+
+Additionally, after some time, all the results disappear.
